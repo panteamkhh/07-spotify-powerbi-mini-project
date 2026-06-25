@@ -1,34 +1,30 @@
-# 🎧 Spotify Power BI Mini Project
+# 🎧 Spotify Power BI Analytics
 
 ![Power BI](https://img.shields.io/badge/Power%20BI-Data%20Analytics-F2C811?logo=powerbi\&logoColor=black)
-![Status](https://img.shields.io/badge/Status-Completed-success)
+![Status](https://img.shields.io/badge/Status-In%20Progress-orange)
 ![Dataset](https://img.shields.io/badge/Dataset-Spotify-green)
 ![License](https://img.shields.io/badge/Learning-Project-blue)
 
-A mini **Data Analytics** project built with **Power BI** using Spotify tracks data.
-The project focuses on data profiling, cleaning, transformation, and dashboard development.
+A Power BI analytics project built using Spotify tracks data. The project focuses on data profiling, cleaning, transformation, and dashboard development using Power Query and Power BI visualizations.
 
 ---
 
 ## 📌 Project Objectives
 
 * Explore and profile the dataset
-
+* Assess data quality
 * Clean and transform data using Power Query
-
-* Create calculated columns and measures
-
-* Build interactive visualizations
-
+* Create analytical categories and aggregations
+* Build interactive dashboards
 * Generate meaningful insights from Spotify data
 
 ---
 
 ## 🛠️ Tools & Technologies
 
-* Power BI
+* Power BI Desktop
 * Power Query
-* Excel / CSV
+* CSV Dataset
 * Git & GitHub
 
 ---
@@ -36,14 +32,12 @@ The project focuses on data profiling, cleaning, transformation, and dashboard d
 ## 📂 Project Structure
 
 ```text
-07-spotify-powerbi-mini-project/
+spotify-powerbi-analytics/
 │
 ├── data/
 │   └── spotify.csv
 │
 ├── power-query/
-│   ├── append-demo.md
-│   ├── merge-demo.md
 │   └── transformations.md
 │
 ├── dashboard/
@@ -61,40 +55,81 @@ The project focuses on data profiling, cleaning, transformation, and dashboard d
 
 ### 1️⃣ Data Profiling
 
-* Examined column quality
-* Checked missing values
-* Identified duplicates
-* Reviewed data types
+* Column Quality
+* Column Distribution
+* Column Profile
+* Duplicate Analysis
+* Data Type Validation
 
-### 2️⃣ Data Cleaning
+### 2️⃣ Data Cleaning & Transformation
 
-* Removed duplicate records
-* Fixed column formats
-* Handled inconsistencies
+* Duplicate Removal
+* Popularity Categorization
+* Group By Operations
+* Genre Aggregation
+* Unpivot Practice
+* Data Validation
 
-### 3️⃣ Power Query Transformations
+### 3️⃣ Dashboard Development
 
-* Filtering
-* Sorting
-* Custom Columns
-* Append Queries
-* Merge Queries
-
-### 4️⃣ Dashboard Development
-
+* KPI Cards
 * Bar Charts
 * Column Charts
-* KPI Cards
-* Distribution Analysis
+* Pie & Donut Charts
+* Scatter Plots
+* Tables & Matrix Visuals
 * Interactive Filtering
+
+---
+
+## 📊 Dataset Summary
+
+| Metric                            |   Value |
+| --------------------------------- | ------: |
+| Raw Rows                          | 114,001 |
+| Rows After Cleaning Empty Records | 114,000 |
+| Rows After Deduplication          |  89,378 |
+| Total Columns                     |      21 |
+| Unique Genres                     |     113 |
+
+---
+
+## 📈 Popularity Statistics
+
+| Statistic          | Value |
+| ------------------ | ----: |
+| Minimum            |     0 |
+| Maximum            |   100 |
+| Average            | 33.23 |
+| Standard Deviation |  22.3 |
+
+---
+
+## 💡 Key Insights
+
+* The dataset originally contained 114,000 records.
+* After deduplication, 89,378 records remained.
+* Approximately 24,622 duplicate records were removed.
+* Popularity values are skewed toward lower ranges.
+* 113 unique music genres were identified.
+* Genre-level aggregation enables comparative popularity analysis.
+* Audio features provide strong potential for exploratory analysis and dashboard creation.
+
+---
+
+## 🚀 Project Progress
+
+✅ Phase 1 — Data Exploration & Profiling
+
+✅ Phase 2 — Data Cleaning & Transformations
+
+🟨 Phase 3 — Dashboard Development (In Progress)
 
 ---
 
 ## 📊 Dashboard Preview
 
-### Main Dashboard
-
-> Dashboard screenshots will be added here.
+Dashboard screenshots will be added after Phase 3 completion.
 
 ```md
 ![Dashboard](dashboard/screenshots/dashboard.png)
@@ -102,25 +137,19 @@ The project focuses on data profiling, cleaning, transformation, and dashboard d
 
 ---
 
-## 💡 Key Insights
-
-* Most tracks belong to specific genres.
-* Popularity distribution is highly uneven.
-* Some audio features show strong relationships with popularity.
-* Dataset contains a diverse range of music characteristics.
-
----
-
-## 🚀 Learning Outcomes
+## 🎯 Learning Outcomes
 
 Through this project I practiced:
 
+* Data Profiling
 * Data Cleaning
-* Power Query
-* Data Modeling
+* Power Query Transformations
+* Feature Engineering
+* Data Aggregation
 * Data Visualization
 * Dashboard Design
 * Business Insight Generation
+* Git & GitHub Project Documentation
 
 ---
 
@@ -132,4 +161,4 @@ Spotify Tracks Dataset from Kaggle
 
 ## 👩‍💻 Author
 
-Learning project for building a Data Analytics portfolio using Power BI.
+Portfolio project focused on Power BI, Power Query, and Data Analytics.

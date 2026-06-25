@@ -1,79 +1,131 @@
-## 🟢 Phase 1 — Data Exploration Summary
+# Spotify Power BI Project Report
 
-### 📊 Dataset Overview
-- Total rows (raw): 114,001
-- Rows after cleaning empty records: 114,000
-- Rows after duplicate check: 114,000 (no significant change)
-- Total columns: 21
-- Dataset type: Spotify tracks audio features dataset
+## 🟢 Phase 1 — Data Exploration & Profiling
 
----
+### Dataset Overview
 
-### 📂 Column List
-- track_id
-- artists
-- album_name
-- track_name
-- popularity
-- duration_ms
-- explicit
-- danceability
-- energy
-- key
-- loudness
-- mode
-- speechiness
-- acousticness
-- instrumentalness
-- liveness
-- valence
-- tempo
-- time_signature
-- track_genre
+| Metric                            |   Value |
+| --------------------------------- | ------: |
+| Raw Rows                          | 114,001 |
+| Rows After Removing Empty Records | 114,000 |
+| Total Columns                     |      21 |
 
----
+### Dataset Columns
 
-### 🔍 Data Quality Assessment
+* track_id
+* artists
+* album_name
+* track_name
+* popularity
+* duration_ms
+* explicit
+* danceability
+* energy
+* key
+* loudness
+* mode
+* speechiness
+* acousticness
+* instrumentalness
+* liveness
+* valence
+* tempo
+* time_signature
+* track_genre
 
-#### Duplicate Analysis
-- Small number of duplicate records detected
-- Most duplicate groups had counts of 1–2
-- No major duplication issue found
+### Data Quality Assessment
 
 #### Data Types
-- All columns have correct data types assigned
+
+All columns were reviewed and validated. Numeric and text fields were correctly assigned.
 
 #### Missing Values
-- No significant missing values detected after cleaning empty rows
+
+No significant missing values were detected after removing empty records.
+
+#### Duplicate Investigation
+
+Duplicate records were investigated using:
+
+* artists
+* track_name
+* album_name
+
+The analysis revealed a substantial number of duplicate song records in the dataset.
+
+### Popularity Analysis
+
+| Statistic          | Value |
+| ------------------ | ----: |
+| Minimum            |     0 |
+| Maximum            |   100 |
+| Average            | 33.23 |
+| Standard Deviation |  22.3 |
+
+### Key Findings
+
+* The dataset contains a wide range of popularity values.
+* Popularity distribution is skewed toward lower values.
+* Many tracks have low popularity scores.
+* Audio features provide strong opportunities for exploratory analysis and dashboard creation.
+
+### Phase 1 Conclusion
+
+The dataset was successfully profiled and assessed for quality. Initial exploration confirmed that the data is suitable for analytics and dashboard development.
 
 ---
 
-### 📊 Popularity Analysis
+## 🟡 Phase 2 — Data Cleaning & Transformations
 
-- Min popularity: 0
-- Max popularity: 100
-- Average popularity: 33.23
-- Standard deviation: 22.3
+### Duplicate Removal
 
-#### Distribution Insight
-- Popularity distribution is highly skewed
-- Many tracks fall in the low popularity range (0–20)
-- Few tracks achieve very high popularity (80–100)
+Duplicates were removed using the following fields:
 
----
+* artists
+* track_name
+* album_name
 
-### 🎧 Key Observations
+| Metric                    |   Value |
+| ------------------------- | ------: |
+| Rows Before Deduplication | 114,000 |
+| Rows After Deduplication  |  89,378 |
+| Removed Rows              |  24,622 |
 
-- Dataset is large and rich in audio features
-- Strong variation exists in popularity values
-- Audio features provide strong potential for correlation analysis
-- Dataset is suitable for music analytics and dashboard development
+### Feature Engineering
 
----
+#### Popularity Category
 
-### 🚀 Phase 1 Conclusion
+A new analytical column was created:
 
-Dataset is clean, well-structured, and ready for:
-- Data transformation (Power Query)
-- Feature engineering
-- Dashboard development
+| Popularity Range | Category |
+| ---------------- | -------- |
+| 0–30             | Low      |
+| 31–70            | Medium   |
+| 71–100           | High     |
+
+### Genre Aggregation
+
+The dataset was grouped by:
+
+* track_genre
+
+Metrics generated:
+
+* Track Count
+* Average Popularity
+
+### Example Result
+
+| Genre   | Track Count | Average Popularity |
+| ------- | ----------: | -----------------: |
+| Spanish |         937 |              39.82 |
+
+### Summary
+
+* 113 unique genres identified.
+* Genre-level aggregation prepared for dashboard visualizations.
+* Dataset transformed into an analytics-ready structure.
+
+### Phase 2 Conclusion
+
+The dataset was cleaned, validated, enriched with analytical categories, and prepared for dashboard development.

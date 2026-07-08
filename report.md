@@ -1,268 +1,152 @@
-# 🎧 Spotify Power BI Project Report
+# Spotify Catalog Analytics — Project Report
 
-A structured data analytics project focused on profiling, cleaning, transformation, and modeling of Spotify dataset using Power BI.
-
----
-
-# 🟢 Stage 1 — Data Profiling
-
-## 📌 Dataset Overview
-
-- Initial dataset: **114,000 rows**
-- Columns: **21**
-- Blank rows: **0**
+**Type:** Data Analytics Case Study
+**Tool Stack:** Power BI Desktop, Power Query (M)
+**Dataset:** Spotify Tracks (114,000 rows, 21 columns)
+**Author's note:** first structured Power BI project; DAX not yet applied — all metrics are computed upstream in Power Query.
 
 ---
 
-## 📊 Data Types
+## Executive Summary
 
-- All columns validated in Power Query
-- No data type issues detected
-- Numeric and categorical fields correctly assigned
+This project takes a raw, heavily-duplicated Spotify tracks export and turns it into a governed analytical model and an interactive dashboard. Of the original 114,000 rows, roughly 21% (24,039 rows) were duplicates and were removed using a composite key of artist, track name, and album. The remaining ~89,961 tracks were reshaped into three purpose-built tables — a cleaned fact table, a genre-level summary, and a long-format audio-feature table — connected through a relationship model rather than flattened joins, in order to keep each table at its natural grain.
 
----
-
-## 🔍 Profiling Tools Used
-
-- Column Quality
-- Column Distribution
-- Column Profile
+The resulting dashboard answers seven core business questions around popularity, genre performance, and audio characteristics. The headline finding: popularity is long-tailed and genre-dependent, and no single audio feature explains it on its own — see [Section 5](#5-key-findings) for the full breakdown.
 
 ---
 
-## 🎯 Popularity Analysis
+## 1. Background & Objective
 
-| Metric          | Value |
-|-----------------|------:|
-| Min             | 0 |
-| Max             | 100 |
-| Average         | 33.23 |
-| Std Dev         | 22.3 |
-| Distinct Values | 101 |
+The goal of this project was twofold:
 
----
+1. Build real fluency with the *pre-dashboard* half of Power BI — profiling, cleaning, and modeling — since this is where most analytical judgment calls actually happen, and where a raw export usually falls apart if skipped.
+2. Produce a dashboard that could stand on its own as a business deliverable: a small set of clear KPIs, seven focused visuals, and a consistent design language, rather than an unstructured collection of charts.
 
-## 🔁 Duplicate Analysis
-
-Duplicate investigation was performed step-by-step using different granularities:
-
-### Step 1 — Full Dataset Scan
-- **31,438 duplicate records identified**
-
-### Step 2 — Intermediate Validation
-- **29,491 duplicates identified**
-
-### Step 3 — Column-Level Inspection
-
-- `artists` → **31,438 duplicates**
-- `track_name` → **29,491 duplicates**
-- `album_name` → **24,039 duplicates**
-
-👉 Final deduplication strategy:
-- artists
-- track_name
-- album_name
+DAX was intentionally out of scope for this iteration — every KPI and aggregation here comes from Power Query transformations, not measures. That boundary is called out explicitly in [Section 6](#6-limitations--assumptions) rather than left implicit.
 
 ---
 
-# 🟡 Stage 2 — Data Cleaning & Transformation
+## 2. Data Source & Scope
 
-## 🧹 Duplicate Removal
+| Attribute | Detail |
+|---|---|
+| Source rows | 114,000 |
+| Source columns | 21 |
+| Blank rows | 0 |
+| Data type issues | None detected — all columns validated in Power Query Editor |
+| Profiling tools used | Column Quality, Column Distribution, Column Profile |
 
-- Rows before cleaning: **114,000**
-- Rows after cleaning: **~89,961**
-- Removed duplicates based on:
-  - artists
-  - track_name
-  - album_name
+**Popularity field, at a glance:**
 
----
+| Metric | Value |
+|---|---:|
+| Min | 0 |
+| Max | 100 |
+| Mean | 33.23 |
+| Std. Dev. | 22.3 |
+| Distinct values | 101 |
 
-## 🎯 Feature Engineering
-
-### 📊 Conditional Column
-
-Created column:
-
-- `popularity_category`
-
-Rules:
-
-- 0–30 → Low
-- 31–70 → Medium
-- 71–100 → High
+This distribution — a mean well below the midpoint of the 0–100 scale — is the first signal that popularity in this catalog is not evenly spread, a point returned to in the findings below.
 
 ---
 
-## 📊 Aggregation (Group By)
+## 3. Methodology
 
-Grouped by:
+### 3.1 Duplicate Resolution
 
-- `track_genre`
+Duplicates were investigated incrementally rather than resolved in one pass, to make sure the final key was actually justified rather than assumed:
 
-Generated metrics:
+- A full-dataset scan flagged **31,438** duplicate records.
+- A secondary, narrower check found **29,491** matches.
+- Column-level inspection then isolated where the overlap was coming from: `artists` (31,438), `track_name` (29,491), `album_name` (24,039).
 
-- Track Count
-- Average Popularity
+The final rule combined all three fields (`artists` + `track_name` + `album_name`) as the deduplication key, since any single field alone over- or under-counted true duplicates. This removed 24,039 rows, taking the dataset from 114,000 to approximately **89,961** rows.
 
----
+### 3.2 Feature Engineering & Reshaping
 
-## 🔄 Data Reshaping (Unpivot)
+Two structural changes were made to support downstream analysis:
 
-Audio feature columns transformed into long format:
+- **`popularity_category`** — a conditional column bucketing the continuous `popularity` score into Low (0–30), Medium (31–70), and High (71–100), so the KPI-level story doesn't require every viewer to interpret a raw 0–100 number.
+- **Unpivot of audio features** — the eight audio-feature columns (`danceability`, `energy`, `speechiness`, `acousticness`, `instrumentalness`, `liveness`, `valence`, `tempo`) were converted from wide to long format, producing a `(track, Audio Feature, Score)` structure. This is what later allows all eight features to be compared in a single visual instead of eight separate ones.
 
-- danceability
-- energy
-- speechiness
-- acousticness
-- instrumentalness
-- liveness
-- valence
-- tempo
+A `Group By` on `track_genre` produced genre-level Track Count and Average Popularity — the basis for the `genre_summary` table.
 
----
+### 3.3 Data Modeling
 
-## 📌 Final Output Structure
+Three tables came out of the steps above, each kept at its own grain rather than merged into one wide table:
 
-| artists | track_name | Audio Feature | Score |
-|---------|------------|---------------|------|
-| A | Song 1 | danceability | 0.72 |
-| A | Song 1 | energy | 0.81 |
+| Table | Grain | Role |
+|---|---|---|
+| `spotify_clean` | One row per track | Fact table |
+| `genre_summary` | One row per genre | Aggregated dimension |
+| `audio_features_long` | One row per track × feature | Analytical / long-format table |
 
----
+They're connected with two single-direction, one-to-many relationships:
 
-## 🎯 Stage 2 Result
+- `spotify_clean[track_genre]` → `genre_summary[track_genre]`
+- `spotify_clean[track_id]` → `audio_features_long[track_id]`
 
-Generated datasets:
-
-- spotify_clean → cleaned base dataset
-- genre_summary → aggregated genre insights
-- audio_features_long → long-format analytical dataset
+Merge and Append were both deliberately evaluated and set aside in favor of this relationship model — flattening any of these tables together would either duplicate genre-level values across every matching track row or mix tables of different grain into one, which would misstate any re-aggregation. That evaluation is documented separately in `power-query/merge-demo.md` and `power-query/append-demo.md` so the decision is auditable rather than assumed.
 
 ---
 
-# 🔵 Stage 3 — Data Modeling
+## 4. Dashboard Overview
 
-## 🎯 Objective
+The dashboard page was planned around seven business questions before any visual was built, specifically to avoid mid-build redesign.
 
-A simplified star-schema style data model was designed to support efficient analysis and visualization in Power BI.
-
----
-
-## 🧩 Data Model Structure
-
-The model consists of three logical tables:
-
-- `spotify_clean` → Core fact table (track-level data)
-- `genre_summary` → Aggregated genre-level metrics
-- `audio_features_long` → Unpivoted audio feature dataset
-
----
-
-## 🔗 Relationships
-
-### 1. Genre-Level Relationship
-
-- `spotify_clean[track_genre]`
-→ `genre_summary[track_genre]`
-
-Purpose:
-- Enables genre-based analysis and filtering
-
----
-
-### 2. Track-Level Relationship
-
-- `spotify_clean[track_id]`
-→ `audio_features_long[track_id]`
-
-Purpose:
-- Enables detailed audio feature analysis per track
-
----
-
-## 🧠 Modeling Principles
-
-- Star-schema inspired structure
-- Separation of raw, aggregated, and analytical layers
-- One-to-many relationships
-- Single-direction filtering
-- Clean semantic model design
-
-
-# 🟣 Stage 4 — Dashboard Development
-
-## 🎯 Objective
-
-Develop an interactive Power BI dashboard to transform the prepared datasets into business insights.
-
----
-
-## 📋 Dashboard Planning
-
-The dashboard was designed around seven business questions before implementation to ensure a consistent layout and minimize redesign.
-
----
-
-## 📊 Dashboard KPIs
+**KPI row:**
 
 | KPI | Value |
-|------|------:|
+|---|---:|
 | Total Tracks | 89.74K |
 | Total Artists | 31.43K |
 | Total Genres | 113 |
 | Average Popularity | 33.20 |
 
----
+**Visuals:**
 
-## 📈 Dashboard Visualizations
+| # | Business Question | Visual Type | Source Table |
+|---|---|---|---|
+| Q1 | How is popularity distributed? | Donut Chart | `spotify_clean` |
+| Q2 | Which genres perform best? | Horizontal Bar | `spotify_clean` |
+| Q3 | Who are the top artists? | Horizontal Bar | `spotify_clean` |
+| Q4 | What are the top tracks? | Table | `spotify_clean` |
+| Q5 | How do audio features compare? | Horizontal Bar | `audio_features_long` |
+| Q6 | Do audio features predict popularity? | Scatter Plot | `spotify_clean` |
+| Q7 | How does each genre's audio profile differ? | Matrix | `audio_features_long` |
 
-| ID | Analysis | Visual | Dataset |
-|----|----------|--------|---------|
-| Q1 | Popularity Distribution | Donut Chart | `spotify_clean` |
-| Q2 | Genre Analysis | Horizontal Bar Chart | `spotify_clean` |
-| Q3 | Top Artists | Horizontal Bar Chart | `spotify_clean` |
-| Q4 | Top Tracks | Table | `spotify_clean` |
-| Q5 | Audio Feature Comparison | Horizontal Bar Chart | `audio_features_long` |
-| Q6 | Audio Features vs Popularity | Scatter Plot | `spotify_clean` |
-| Q7 | Genre vs Audio Features | Matrix | `audio_features_long` |
-
----
-
-## 🎨 Dashboard Design
-
-Applied design principles:
-
-- Dark theme
-- KPI cards
-- Consistent typography
-- Interactive visualizations
-- Clear visual hierarchy
-- Business-oriented layout
+Design language: dark theme, consistent typography, and a KPI-first / detail-second layout. Full rationale for color choices and per-visual design decisions is in `dashboard/dashboard-notes.md` — kept separate from this report so design iteration doesn't require touching the analytical write-up.
 
 ---
 
-## 🎯 Stage 4 Result
+## 5. Key Findings
 
-The dashboard supports:
+**Popularity is long-tailed, not evenly distributed.**
+A mean of 33.23 against a 0–100 scale, with a standard deviation of 22.3, means most tracks sit well below the midpoint and very few reach the 70+ "hit" range.
 
-- Popularity analysis
-- Genre comparison
-- Artist ranking
-- Track exploration
-- Audio feature comparison
-- Feature-popularity relationship analysis
-- Genre-based audio feature exploration
+**Genre is a real differentiator, not noise.**
+Genre-level averages split clearly into groups that sit persistently above vs. below the 33.2 catalog-wide average — genre is one of the first useful filters in any popularity analysis on this data.
+
+**Audio-feature profiles cluster by genre.**
+The long-format `audio_features_long` table makes it possible to compare all eight features across genres in one matrix. Genres visibly cluster into recognizable profiles (e.g., higher energy paired with lower acousticness, or the reverse).
+
+**No single audio feature explains popularity alone.**
+The scatter plot shows loose, non-linear tendencies at best for any individual feature — consistent with popularity being driven by factors outside this dataset (artist reach, playlist placement, release timing).
+
+**Deduplication changed the numbers that matter.**
+Roughly 21% of the raw rows were duplicates. Any KPI or genre count computed before cleaning would have meaningfully overstated the true catalog size.
+
+**Suggested reading order for the dashboard:** start at the KPI row for scale, use the Genre Analysis bar chart as the primary filter for everything else, then read the Scatter Plot and the Genre × Audio Feature matrix together — one shows *whether* a relationship exists, the other shows *where* it's coming from.
+
+---
+
+## 6. Limitations & Assumptions
+
+- **No DAX measures** — all figures are Power-Query-computed columns/aggregations, not DAX. This limits flexibility for anything requiring dynamic, filter-context-aware calculations (e.g., a measure that recalculates average popularity per current slicer selection independently of the physical `genre_summary` table).
+- **No time dimension** — the source data has no reliable release-date field, so no trend-over-time analysis was attempted; the Q6 scatter plot is a snapshot, not a trend.
+- **Deduplication key is a judgment call** — `artists` + `track_name` + `album_name` was chosen after inspection, but a small number of legitimately distinct tracks (e.g., a re-recording under an identical title) could theoretically be collapsed by this rule. This was not separately audited.
+- **Popularity is a platform-provided score**, not independently validated — its underlying methodology is external to this project.
 
 ---
 
-## 📊 Final Data Model Outcome
-
-The model enables:
-
-- Genre-level insights
-- Track-level analysis
-- Audio feature exploration
-- Scalable dashboard development in Power BI
-
----
+*Supporting technical references: `power-query/transformations.md` (full transformation log), `power-query/merge-demo.md` and `power-query/append-demo.md` (technique evaluations), `dashboard/dashboard-notes.md` (design rationale).*

@@ -12,7 +12,7 @@ Supplementary notes for `spotify-dashboard.pbix`, expanding on the Phase 4 summa
 
 ---
 
-## 🎨 Visual Theme
+##  Visual Theme
 
 | Element | Choice |
 |---|---|
@@ -26,7 +26,7 @@ Supplementary notes for `spotify-dashboard.pbix`, expanding on the Phase 4 summa
 
 ---
 
-## 📊 KPI Card Row
+##  KPI Card Row
 
 | KPI | Value | Source |
 |---|---:|---|
@@ -39,7 +39,7 @@ Placed top-of-page, left-to-right, so scale (tracks/artists/genres) is establish
 
 ---
 
-## 🖱️ Interactivity
+##  Interactivity
 
 - **Cross-filtering:** clicking a genre in the Genre Analysis bar chart filters every other visual on the page (Popularity Distribution, Top Artists, Top Tracks, Audio Feature Comparison)
 - **Tooltips:** default tooltips retained on the scatter plot (Q6) to surface track name/artist on hover, since the visual has no data labels
@@ -47,7 +47,7 @@ Placed top-of-page, left-to-right, so scale (tracks/artists/genres) is establish
 
 ---
 
-## 📈 Visual-by-Visual Notes
+##  Visual-by-Visual Notes
 
 **Q1 — Popularity Distribution (Donut):** buckets `popularity_category` (Low/Medium/High) rather than raw popularity, so the shape of the catalog is legible at a glance instead of a dense histogram.
 
@@ -65,14 +65,9 @@ Placed top-of-page, left-to-right, so scale (tracks/artists/genres) is establish
 
 ---
 
-## 🖼️ Screenshots
+##  Screenshots
 
 See `screenshots/` for exported page views. (Add updated exports here whenever the dashboard visuals change materially.)
 
 ---
 
-## 🔭 Possible Follow-ups
-
-- Add a genre slicer pinned to the top of the page instead of relying solely on bar-chart cross-filtering
-- Add bookmarks for 2–3 pre-set "views" (e.g., "High popularity only", "By decade" if a date field is added)
-- Revisit color contrast for accessibility (WCAG) once the palette is finalized

@@ -8,81 +8,78 @@
 
 ## 📌 Project Overview
 
-An end-to-end **Power BI analytics project** built on Spotify dataset.
+An end-to-end **Power BI analytics project** built on a public Spotify tracks dataset (114,000 rows / 21 columns).
 
-The project focuses on transforming raw music data into structured analytical datasets through:
+The project was built as a hands-on introduction to the Power BI ecosystem — going from raw, duplicated data all the way to a structured semantic model and an interactive dashboard. It intentionally covers the parts of the workflow that come *before* dashboarding (profiling, cleaning, reshaping, modeling), which is where most of the real analytical decisions happen.
 
-- Data profiling & quality assessment
-- Data cleaning & deduplication
-- Feature engineering
-- Data transformation (including unpivot modeling)
-- Preparing data for dashboard-level insights
-- Interactive dashboard development
+> **Scope note:** This project focuses on Power Query (M) and data modeling fundamentals. DAX measures/calculated columns are **not** used yet — all KPIs and aggregations are produced upstream in Power Query. This is a deliberate scoping decision, not an oversight, and is called out as a "Next Steps" item below.
 
 ---
 
-## 🧭 Project Workflow (Stages)
+## 🧭 Project Roadmap (5 Phases)
 
-### 🟢 Stage 1 — Data Profiling
-- Data quality check (21 columns)
-- Missing values analysis
-- Duplicate detection (multi-level logic)
-- Statistical overview of popularity
+### 🟢 Phase 1 — Data Understanding & Profiling
+📂 [`power-query/transformations.md`](power-query/transformations.md)
 
-### 🟡 Stage 2 — Data Cleaning & Transformation
-- Duplicate removal using business keys
-- Feature engineering (popularity categorization)
-- Genre-level aggregation
-- Unpivot transformation for audio features
+- Dataset structure review (114,000 rows × 21 columns)
+- Data type validation (no issues found)
+- Column quality / distribution / profile checks
+- Statistical overview of `popularity` (min, max, mean, std dev, distinct count)
+- Duplicate detection at full-dataset and column level
 
-### 🔵 Stage 3 — Data Modeling
+### 🟡 Phase 2 — Data Cleaning & Feature Engineering
+📂 [`power-query/transformations.md`](power-query/transformations.md)
 
-- Designed a simplified star schema structure using three tables:
-  - `spotify_clean` (fact table)
-  - `genre_summary` (genre-level aggregation)
-  - `audio_features_long` (feature-level analysis)
+- Duplicate removal using a composite business key (`artists`, `track_name`, `album_name`)
+- Conditional column: `popularity_category` (Low / Medium / High)
+- Genre-level aggregation via Group By
+- Unpivot of 8 audio-feature columns into a long/tidy format
 
-- Created relationships:
-  - `spotify_clean[track_genre]` → `genre_summary[track_genre]`
-  - `spotify_clean[track_id]` → `audio_features_long[track_id]`
+### 🔵 Phase 3 — Data Modeling
+📂 [`report.md`](report.md)
 
-- Applied one-to-many, single-direction filtering for clean data flow
+- Star-schema-inspired model with one fact table and two supporting tables
+- `spotify_clean[track_genre]` → `genre_summary[track_genre]`
+- `spotify_clean[track_id]` → `audio_features_long[track_id]`
+- One-to-many, single-direction relationships (Model view, no manual Merge joins)
+- Two supplementary technique demos included for reference:
+  - [`power-query/merge-demo.md`](power-query/merge-demo.md) — Merge Queries walkthrough
+  - [`power-query/append-demo.md`](power-query/append-demo.md) — Append Queries walkthrough
 
-- Model prepared for dashboard development and future DAX calculations
+### 🟣 Phase 4 — Dashboard Development
+📂 [`dashboard/`](dashboard/)
 
-### 🟣 Stage 4 — Dashboard Development
+- 4 executive KPI cards
+- 7 business-oriented visuals (popularity, genre, top artists/tracks, audio features)
+- Consistent dark theme, business-focused layout
+- Design rationale documented in [`dashboard/dashboard-notes.md`](dashboard/dashboard-notes.md)
 
-- Designed an interactive Power BI dashboard
-- Built 4 KPI cards for executive summary
-- Created 7 business-oriented visualizations:
-  - Popularity Distribution
-  - Genre Analysis
-  - Top Artists
-  - Top Tracks
-  - Audio Feature Comparison
-  - Audio Features vs Popularity
-  - Genre vs Audio Features
-- Applied a consistent dark theme and business-focused layout
+### 🟠 Phase 5 — Insights & Storytelling
+📂 [`report.md`](report.md)
+
+- Key findings translated into plain-language insights
+- Interpretation of genre popularity patterns and audio-feature relationships
+- Full write-up in the project report
 
 ---
 
-## 📊 Datasets Created
+## 📊 Datasets Produced
 
 | Dataset | Description |
-|--------|-------------|
-| `spotify_clean` | Cleaned dataset after deduplication |
-| `genre_summary` | Genre-level aggregated metrics |
-| `audio_features_long` | Unpivoted feature-level dataset |
+|---|---|
+| `spotify_clean` | Cleaned, deduplicated fact table (~89,961 rows) |
+| `genre_summary` | Genre-level aggregated metrics (track count, avg. popularity) |
+| `audio_features_long` | Unpivoted, long-format audio feature dataset |
 
 ---
 
 ## 💡 Key Insights
 
-- Most tracks fall in low-to-medium popularity range
-- Genre popularity varies significantly
-- Audio features enable deeper track-level analysis
+- Most tracks fall in the low-to-medium popularity range
+- Genre popularity varies significantly across the catalog
+- Audio features enable deeper track-level analysis beyond popularity alone
 - Relationships between audio features and popularity can be explored visually
-- Interactive dashboards improve analytical exploration
+- Interactive dashboards materially speed up analytical exploration vs. static reports
 
 ---
 
@@ -115,3 +112,6 @@ spotify-powerbi-analytics/
 │
 ├── report.md
 └── README.md
+```
+
+---

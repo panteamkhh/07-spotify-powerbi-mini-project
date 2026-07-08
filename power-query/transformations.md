@@ -1,10 +1,12 @@
 # ⚙️ Power Query Transformations Log
 
-This document records all transformations applied in Power Query during the Spotify dataset preparation phase.
+This document records every transformation applied in Power Query during data preparation. It is the detailed, step-by-step log behind the summarized narrative in `../report.md` (Sections 2–3) and the phase overview in `../README.md`.
+
+> **Terminology note:** earlier drafts of this log used "Stage 1/2/3." It's been aligned here to "Phase 1/2/3" to match the numbering used across `README.md` and `report.md`, so the same phase number means the same thing everywhere in the repo.
 
 ---
 
-# 🟢 Stage 1 — Data Profiling
+# 🟢 Phase 1 — Data Profiling
 
 ## Dataset Initialization
 
@@ -66,9 +68,11 @@ Records were considered duplicates based on:
 - track_name
 - album_name
 
+No single column was used alone — each was checked independently first so the combined rule was a deliberate choice, not a default.
+
 ---
 
-# 🟡 Stage 2 — Data Cleaning & Transformation
+# 🟡 Phase 2 — Data Cleaning & Transformation
 
 ## Remove Duplicates Step
 
@@ -142,7 +146,7 @@ Final datasets produced:
 
 ---
 
-# 🔵 Stage 3 — Data Modeling
+# 🔵 Phase 3 — Data Modeling
 
 ## Objective
 
@@ -191,6 +195,13 @@ Purpose:
 - Single-direction filtering
 - Separation of raw, aggregated, and analytical layers
 
+## Merge & Append — Considered, Not Applied Here
+
+Merge and Append were both evaluated as alternatives to the relationship model above and consciously set aside for the production tables, since flattening `spotify_clean`, `genre_summary`, and `audio_features_long` together would either duplicate genre-level values across matching rows or combine tables of different grain. That evaluation — including worked examples against this same dataset — is documented separately so it doesn't clutter this log:
+
+- `merge-demo.md`
+- `append-demo.md`
+
 ---
 
 ## Final Model Outcome
@@ -204,15 +215,16 @@ The final semantic model enables:
 
 ---
 
-# 🟣 Next Stage
+# 🟣 Next Phase
 
 After completing the data preparation and modeling process, the generated datasets were loaded into Power BI for dashboard development.
 
 Dashboard implementation, KPI creation, and visualization design are documented separately in:
 
-- `report.md`
-- `README.md`
+- `../report.md` (Section 4 — Dashboard Overview, Section 5 — Key Findings)
+- `../README.md` (Phase 4 — Dashboard Development)
+- `../dashboard/dashboard-notes.md` (design rationale)
 
-No additional Power Query transformations were applied during the dashboard development stage.
+No additional Power Query transformations were applied during the dashboard development stage. DAX was not used anywhere in this phase or the modeling phase above — every field here is a Power Query column or aggregation, called out explicitly in `../report.md` (Section 6 — Limitations & Assumptions).
 
 ---

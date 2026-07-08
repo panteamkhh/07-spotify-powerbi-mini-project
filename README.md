@@ -12,7 +12,7 @@ An end-to-end **Power BI analytics project** built on a public Spotify tracks da
 
 The project was built as a hands-on introduction to the Power BI ecosystem — going from raw, duplicated data all the way to a structured semantic model and an interactive dashboard. It intentionally covers the parts of the workflow that come *before* dashboarding (profiling, cleaning, reshaping, modeling), which is where most of the real analytical decisions happen.
 
-> **Scope note:** This project focuses on Power Query (M) and data modeling fundamentals. DAX measures/calculated columns are **not** used yet — all KPIs and aggregations are produced upstream in Power Query. This is a deliberate scoping decision, not an oversight, and is called out as a "Next Steps" item below.
+> **Scope note:** This project focuses on Power Query (M) and data modeling fundamentals. DAX measures/calculated columns are **not** used yet 
 
 ---
 

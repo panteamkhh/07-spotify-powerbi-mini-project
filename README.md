@@ -1,8 +1,10 @@
 # 🎧 Spotify Power BI Analytics
 
+### Turning 114K raw, duplicated Spotify tracks into a clean semantic model and an interactive dashboard.
+
 ![Power BI](https://img.shields.io/badge/Power%20BI-Analytics-F2C811?logo=powerbi)
-![Status](https://img.shields.io/badge/Status-Completed-success)
 ![Type](https://img.shields.io/badge/Project-Data%20Analytics-blue)
+![Power Query](https://img.shields.io/badge/Power%20Query-M%20Language-217346?logo=powerquery)
 
 ---
 
@@ -115,3 +117,4 @@ spotify-powerbi-analytics/
 ```
 
 ---
+
